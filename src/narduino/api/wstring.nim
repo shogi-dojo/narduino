@@ -15,6 +15,12 @@
 
 
 type
+  ConstCString* {.importc: "const char*", nodecl.} = cstring
+    ## A `const char*`, as returned by c_str(). Use it wherever a C++ API hands out a
+    ## pointer to read-only bytes: a plain `cstring` is `char*`, so the C++ compiler
+    ## rejects storing a `const char*` result into it. It converts to `cstring`
+    ## implicitly, so it works with `$` and with any binding that takes a `cstring`.
+
   FlashStringHelper* {.importcpp: "__FlashStringHelper",
                        header: "WString.h", incompleteStruct, byref.} = object
     ## Opaque handle for a string stored in program memory (flash/PROGMEM).
@@ -214,7 +220,7 @@ proc getBytes*(s: String, buf: ptr uint8, bufsize: cuint, index: cuint = 0)
 proc toCharArray*(s: String, buf: cstring, bufsize: cuint, index: cuint = 0)
   {.importcpp.}
   ## Same as getBytes but typed for a char buffer.
-proc c_str*(s: String): cstring {.importcpp.}
+proc c_str*(s: String): ConstCString {.importcpp.}
   ## Direct pointer to the internal NUL-terminated buffer.  Valid only as
   ## long as the String is not modified or destroyed.
 
