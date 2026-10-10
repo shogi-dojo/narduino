@@ -66,6 +66,8 @@ proc SSID*(w: var WiFiClass, i: uint8): String {.importcpp: "#.SSID(@)".}
   ## SSID of scan result i.
 proc RSSI*(w: var WiFiClass, i: uint8): cint {.importcpp: "#.RSSI(@)".}
   ## Signal strength of scan result i, in dBm.
+proc RSSI*(w: var WiFiClass): cint {.importcpp: "#.RSSI()".}
+  ## Signal strength of the current connection, in dBm.
 proc encryptionType*(w: var WiFiClass, i: uint8): uint8 {.importcpp: "#.encryptionType(@)".}
   ## Encryption type of scan result i (WIFI_AUTH_* values; 0 = open).
 
