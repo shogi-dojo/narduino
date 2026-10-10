@@ -6,6 +6,8 @@
 ## Each open/use/close is a namespace session: begin(name, readOnly), operate, end().
 ## Strings are read into a caller-owned buffer, so no heap String is needed.
 
+import ../api/wstring
+
 {.push header: "Preferences.h".}
 
 type
@@ -21,9 +23,13 @@ proc `end`*(p: var Preferences) {.importcpp: "#.end()".}
   ## Closes the namespace.
 proc putString*(p: var Preferences, key: cstring, value: cstring): csize_t {.importcpp: "#.putString(@)".}
   ## Stores a string. Returns the number of bytes written, or 0 on failure.
-proc getString*(p: var Preferences, key: cstring, value: cstring, maxLen: csize_t): csize_t
+proc getString*(p: var Preferences, key: cstring, value: ptr char, maxLen: csize_t): csize_t
   {.importcpp: "#.getString(@)".}
-  ## Reads a string into a buffer of maxLen bytes. Returns the length, or 0 if missing.
+  ## Reads a string into a caller-owned buffer of maxLen bytes, NUL-terminated.
+  ## Returns the length, or 0 if missing. Pass `addr buf[0]` and `buf.len`.
+proc getString*(p: var Preferences, key: cstring, defaultValue: cstring = ""): String
+  {.importcpp: "#.getString(@)".}
+  ## Reads a string as an Arduino String, or the default when the key is missing.
 proc putInt*(p: var Preferences, key: cstring, value: int32): csize_t {.importcpp: "#.putInt(@)".}
   ## Stores a 32-bit integer.
 proc getInt*(p: var Preferences, key: cstring, defaultValue: int32 = 0): int32

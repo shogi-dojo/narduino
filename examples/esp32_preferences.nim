@@ -14,14 +14,15 @@ setup:
     let boots = prefs.getInt("boots", 0) + 1
     discard prefs.putInt("boots", boots)
     discard prefs.putString("label", "smart compass")
-    var label: array[32, char]
-    let n = prefs.getString("label", cast[cstring](addr label[0]), label.len.csize_t)
+    var buf: array[32, char]
+    let n = prefs.getString("label", addr buf[0], buf.len.csize_t)
+    let label = prefs.getString("label")
     Serial.print("boots: ")
     Serial.println(initString(boots).c_str())
     Serial.print("label (")
     Serial.print(initString(int(n)).c_str())
     Serial.print(" bytes): ")
-    Serial.println(cast[cstring](addr label[0]))
+    Serial.println(label.c_str())
     prefs.`end`()
   else:
     Serial.println("could not open the preferences namespace")
